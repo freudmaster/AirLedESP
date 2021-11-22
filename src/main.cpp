@@ -40,7 +40,9 @@ void intToRGB(int color,int *rgb);
 void setup() {
    // Connect to wifi
    WiFi.begin(ssid, pwd);
+   Serial.begin(9600);
 
+  Serial.println("Connecting to wifi");
    //  Wait esp8266 connected to wifi
    while (WiFi.status() != WL_CONNECTED) {
       delay(500);
@@ -50,8 +52,7 @@ void setup() {
    subnet=WiFi.subnetMask();
    udp.begin(port);
    state=DISCONNECTED;
-   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, LED_COLORS_COUNT);
-
+   FastLED.addLeds<WS2812B, DATA_PIN>(leds, LED_COLORS_COUNT);
    }
 void loop() {
   if (state==DISCONNECTED)
@@ -116,7 +117,7 @@ void tryConnectTCP(const IPAddress &ip,const int port){
   }
   else
   {
-    Serial.println("Connection failed");
+    //Serial.println("Connection failed");
   }
   
 
@@ -140,8 +141,9 @@ void changeLedsColors(int color,int delayBetweenLedsMs){
   {
     leds[i]=CRGB(rgb[0],rgb[1],rgb[2]);
     delay(delayBetweenLedsMs);
+    FastLED.show();
+
   }
-  FastLED.show();
 }
 void intToRGB(int color,int *rgb){
   rgb[0]=(color>>16)&0xFF;
